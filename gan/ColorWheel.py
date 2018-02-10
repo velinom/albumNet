@@ -56,7 +56,7 @@ def magnitude(vector):
         return 1
     return math.sqrt(vector[0] ** 2 + vector[1] ** 2)
 
-def generateColorWheel(fit):
+def generateColorWheel(fit='3/2'):
     '''
     :param fit: Determine how each pixel maps to RGB. Can be 'lin', 'log', '3/2'
     :return: Saves a png of a color wheel in the same directory.
