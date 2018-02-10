@@ -1,4 +1,5 @@
 .DS_Store
 .idea/
 
-gan/data/
+__pycache__/
+gan/__pyache__/
