@@ -6,6 +6,7 @@ import math
 import random
 import pprint
 import scipy.misc
+from PIL import Image
 import numpy as np
 from time import gmtime, strftime
 import datetime as dt
@@ -64,7 +65,8 @@ def merge(images, size):
 
 def imsave(images, size, path):
   image = np.squeeze(merge(images, size))
-  return scipy.misc.imsave(path, image)
+  png = Image.fromarray(image)
+  png.save(path)
 
 def center_crop(x, crop_h, crop_w,
                 resize_h=64, resize_w=64):
@@ -241,3 +243,4 @@ def visualize(sess, dcgan, config, option):
     new_image_set = [merge(np.array([images[idx] for images in image_set]), [10, 10]) \
         for idx in range(64) + range(63, -1, -1)]
     make_gif(new_image_set, './samples/test_gif_merged.gif', duration=8)
+
