@@ -17,7 +17,7 @@ def lrelu(x, n, leak=0.2):
 def process_data():
     current_dir = os.getcwd()
     # parent = os.path.dirname(current_dir)
-    albums_dir = os.path.join(current_dir, 'ambient')
+    albums_dir = os.path.join(current_dir, 'pop')
     images = []
     for each in os.listdir(albums_dir):
         images.append(os.path.join(albums_dir, each))
@@ -213,9 +213,6 @@ def train():
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    print('total training sample num:%d' % samples_num)
-    print('batch size: %d, batch num per epoch: %d, epoch num: %d' % (batch_size, batch_num, EPOCH))
-    print('start training...')
     for i in range(EPOCH):
         print('i: ',i)
         for j in range(batch_num):
