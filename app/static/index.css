@@ -30,7 +30,7 @@ body {
 
 .column-title {
     position: relative;
-    left: 140px;
+    left: 132px;
     top: 10px;
     width: max-content;
     font-size: 22px;
@@ -39,11 +39,29 @@ body {
 }
 
 #genre-list {
-    width: max-content;
+    width: 173px;
     margin: auto;
     position: relative;
     top: 30px;
     text-align: center;
+}
+
+.genre-item {
+    font-size: 18px;
+    color: #2a3a44;
+    padding: 5px 0px;
+    cursor: pointer;
+    border-radius: 22px;
+}
+
+.genre-item.selected {
+    background-color: #6d98a2;
+    color: #ebe8e2;
+}
+
+.genre-item:hover {
+    background-color: #007193;
+    color: #ebe8e2;
 }
 
 #result-image {
@@ -60,6 +78,7 @@ body {
     background-color: #007193;
     text-align: center;
     line-height: 30px;
+    border-radius: 22px;
     color: #ebe8e2;
     cursor: pointer;
 }

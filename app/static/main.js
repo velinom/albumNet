@@ -1,3 +1,5 @@
+var selectedGenre;
+
 function httpGetAsync(url, callback) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
@@ -10,4 +12,13 @@ function httpGetAsync(url, callback) {
 
 function sendAlbumRequest() {
    document.getElementById('result-image').src = '/generate';
+}
+
+function onGenreClick(genre) {
+    var genreList = document.getElementById('genre-list').getElementsByClassName('selected');
+    if (genreList.length > 0) {
+        genreList[0].className = 'genre-item';
+    }
+    document.getElementById(genre).className = 'genre-item selected';
+    selectedGenre = genre;
 }
