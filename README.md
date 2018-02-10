@@ -1,2 +1,8 @@
 # albumNet
-I make album covers using a GAN
+### I 
+##### make 
+#### album 
+### covers 
+### using 
+###### a 
+# GAN
