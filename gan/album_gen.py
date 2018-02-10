@@ -233,6 +233,9 @@ def train():
                 # train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
                 _, gLoss = sess.run([trainer_g, g_loss],
                                     feed_dict={random_input: train_noise, is_train: True})
+                if (k == 0):
+                    print("TIME: ", dt.datetime.time())
+                    print("G-LOSS: ", gLoss)
 
         # save check point every 500 epoch
         if i % 500 == 0:
