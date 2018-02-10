@@ -4,7 +4,7 @@ from gan.utils import *
 
 HEIGHT, WIDTH, CHANNEL = 256, 256, 3
 BATCH_SIZE = 64
-EPOCH = 5000
+EPOCH = 500
 
 version = 'newAlbums'
 new_covers_path = './' + version
@@ -213,44 +213,45 @@ def train():
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    for i in range(EPOCH):
-        print('i: ',i)
-        for j in range(batch_num):
-            print('j: ',j)
-            d_iters = 5
-            g_iters = 1
+    with open('output.txt', 'w') as f:
+        for i in range(EPOCH):
+            f.write('i: '+str(i))
+            for j in range(batch_num):
+                f.write('j: '+str(j))
+                d_iters = 5
+                g_iters = 1
 
-            train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
-            for k in range(d_iters):
-                train_image = sess.run(image_batch)
-                # wgan clip weights
-                sess.run(d_clip)
-                # Update the discriminator
-                _, dLoss = sess.run([trainer_d, d_loss],
-                                    feed_dict={random_input: train_noise, real_image: train_image, is_train: True})
-            # Update the generator
-            for k in range(g_iters):
-                # train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
-                _, gLoss = sess.run([trainer_g, g_loss],
-                                    feed_dict={random_input: train_noise, is_train: True})
-                if (k == 0):
-                    print("TIME: ", dt.datetime.time())
-                    print("G-LOSS: ", gLoss)
+                train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
+                for k in range(d_iters):
+                    train_image = sess.run(image_batch)
+                    # wgan clip weights
+                    sess.run(d_clip)
+                    # Update the discriminator
+                    _, dLoss = sess.run([trainer_d, d_loss],
+                                        feed_dict={random_input: train_noise, real_image: train_image, is_train: True})
+                # Update the generator
+                for k in range(g_iters):
+                    # train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
+                    _, gLoss = sess.run([trainer_g, g_loss],
+                                        feed_dict={random_input: train_noise, is_train: True})
+                    if (k == 0):
+                        f.write("TIME: "+ str(dt.datetime.time()))
+                        f.write("G-LOSS: "+ str(gLoss))
 
-        # save check point every 500 epoch
-        if i % 500 == 0:
-            if not os.path.exists('./model/' + version):
-                os.makedirs('./model/' + version)
-            saver.save(sess, './model/' + version + '/' + str(i))
-        if i % 50 == 0:
-            # save images
-            if not os.path.exists(new_covers_path):
-                os.makedirs(new_covers_path)
-            sample_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
-            imgtest = sess.run(fake_image, feed_dict={random_input: sample_noise, is_train: False})
-            save_images(imgtest, [8, 8], new_covers_path + '/epoch' + str(i) + '.jpg')
+            # save check point every 500 epoch
+            if i % 500 == 0:
+                if not os.path.exists('./model/' + version):
+                    os.makedirs('./model/' + version)
+                saver.save(sess, './model/' + version + '/' + str(i))
+            if i % 5 == 0:
+                # save images
+                if not os.path.exists(new_covers_path):
+                    os.makedirs(new_covers_path)
+                sample_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
+                imgtest = sess.run(fake_image, feed_dict={random_input: sample_noise, is_train: False})
+                save_images(imgtest, [8, 8], new_covers_path + '/epoch' + str(i) + '.jpg')
 
-            print('train:[%d],d_loss:%f,g_loss:%f' % (i, dLoss, gLoss))
+                f.write('train:[%d],d_loss:%f,g_loss:%f' % (i, dLoss, gLoss))
     coord.request_stop()
     coord.join(threads)
 
