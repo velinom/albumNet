@@ -216,23 +216,23 @@ def train():
     print('batch size: %d, batch num per epoch: %d, epoch num: %d' % (batch_size, batch_num, EPOCH))
     print('start training...')
     for i in range(EPOCH):
-        print(i)
+        print('i: ',i)
         for j in range(batch_num):
-            print(j)
+            print('j: ',j)
             d_iters = 5
             g_iters = 1
 
             train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
+            print("START DISCRIMINATOR")
             for k in range(d_iters):
-                print(k)
+                print('k', k)
                 train_image = sess.run(image_batch)
                 # wgan clip weights
                 sess.run(d_clip)
-
                 # Update the discriminator
                 _, dLoss = sess.run([trainer_d, d_loss],
                                     feed_dict={random_input: train_noise, real_image: train_image, is_train: True})
-
+            print("START GENERATOR")
             # Update the generator
             for k in range(g_iters):
                 # train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
@@ -240,6 +240,7 @@ def train():
                                     feed_dict={random_input: train_noise, is_train: True})
 
                 # print 'train:[%d/%d],d_loss:%f,g_loss:%f' % (i, j, dLoss, gLoss)
+            print("END GENERATOR")
 
         # save check point every 500 epoch
         if i % 500 == 0:
@@ -263,7 +264,6 @@ def train():
 
 if __name__ == "__main__":
     train()
-    # test()
 
 
 
