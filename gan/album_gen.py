@@ -17,7 +17,7 @@ def lrelu(x, n, leak=0.2):
 def process_data():
     current_dir = os.getcwd()
     # parent = os.path.dirname(current_dir)
-    albums_dir = os.path.join(current_dir, 'pop')
+    albums_dir = os.path.join(current_dir, 'data')
     images = []
     for each in os.listdir(albums_dir):
         images.append(os.path.join(albums_dir, each))
