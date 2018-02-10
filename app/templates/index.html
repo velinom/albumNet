@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset="utf-8" />
+  <title>AlbumNet</title>
+  <link type="text/css" rel="stylesheet"
+        href="{{ url_for('static', filename='index.css')}}" />
+</head>
+<body>
+<script src="static/main.js"></script>
+<div id="root">
+    <div class="indexTitle">
+        AlbumNet, Neural Network Album Art Generator
+    </div>
+    <div class="index-content">
+        <div id="index-colorChooser" class="content-column">
+            <div class="column-title">Choose a color</div>
+        </div>
+        <div id="index-genreChooser" class="content-column">
+            <div class="column-title">Choose a genre</div>
+        </div>
+        <div id="index-resultRenderer" class="content-column">
+            <div class="column-title">Result</div>
+            <button id="generateButton" onclick="sendAlbumRequest()">GENERATE</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+body {
+    background-color: #f7f7f7;
+    margin: 0px;
+}
+
+#root {
+    height: 100vh;
+}
+
+.indexTitle {
+    font-family: sans-serif;
+    font-size: 32px;
+    text-align: center;
+    padding: 20px 0px;
+}
+
+.index-content {
+    width: 100%;
+    height: calc(100% - 57px);
+}
+
+.content-column {
+    width: 33.3%;
+    height: 100%;
+    float: left;
+}
+
+.column-title {
+    position: relative;
+    left: 140px;
+    width: max-content;
+    font-size: 22px;
+    border-bottom: solid 1px black;
+}
+
+#generateButton {
+    position: relative;
+    top: 20px;
+}
