@@ -214,6 +214,8 @@ def train():
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
+    saver = tf.train.Saver()
+
     print('total training sample num:%d' % samples_num)
     print('batch size: %d, batch num per epoch: %d, epoch num: %d' % (batch_size, batch_num, EPOCH))
     print('start training...')
@@ -249,6 +251,8 @@ def train():
             saver.save(sess, './model/' + version + '/' + str(i))
         if i % 5 == 0:
             # save images
+            save_path = saver.save(sess, "/tmp/model%d.ckpt"%i)
+            print("Model saved in path: %s" % save_path)
             if not os.path.exists(new_covers_path):
                 os.makedirs(new_covers_path)
             sample_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
