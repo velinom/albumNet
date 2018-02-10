@@ -68,5 +68,7 @@ def colorz(filename):
 
     points = getColorPoints(img)
     clusters = kmeans(points, 1)
+    finalColors = []
     for c in clusters:
-        print(c.center)
+        finalColors.append(c.center.rgb)
+    return finalColors
