@@ -6,9 +6,19 @@ img_half = img_size // 2
 outer_radius = 1000
 
 def getcolor(x, y):
+    '''
+    :param x: x-coordinate from center of circle
+    :param y: y-coordinate from center of circle
+    :return: tuple (R, G, B) calculated through a 3/2 polynomial fit
+    '''
     return getRGB((x, y), '3/2')
 
 def getRGB(vector, fit):
+    '''
+    :param vector: (x, y) relative to center of circle
+    :param fit: Determines how vector maps to RGB. Can be 'lin', 'log', '3/2'
+    :return: tuple (R, G, B) calculated through specified fit
+    '''
     assert fit in ('lin', 'log', '3/2')
     color = []
     for c in ('r', 'g', 'b'):
@@ -25,6 +35,11 @@ def getRGB(vector, fit):
     return tuple(color)
 
 def rotate(vector, color):
+    '''
+    :param vector: (x, y)
+    :param color: 'r': no rotation; 'g': rotation by -120 deg; 'b': rotation by 120 deg
+    :return: (x', y') of rotated vector
+    '''
     if color == 'r':
         return vector
     elif color == 'g':
@@ -36,17 +51,16 @@ def rotate(vector, color):
     else:
         raise ValueError('Invalid Color.')
 
-def normalize(vector):
-    mag = magnitude(vector)
-    return (vector[0] / mag, vector[1] / mag)
-
 def magnitude(vector):
     if vector == (0, 0):
         return 1
     return math.sqrt(vector[0] ** 2 + vector[1] ** 2)
 
 def generateColorWheel(fit):
-
+    '''
+    :param fit: Determine how each pixel maps to RGB. Can be 'lin', 'log', '3/2'
+    :return: Saves a png of a color wheel in the same directory.
+    '''
     im = Image.new('RGB', (img_size, img_size))
     for x in range(img_size):
         for y in range(img_size):
