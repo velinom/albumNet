@@ -1,4 +1,5 @@
 import flask
+from PIL import Image
 
 # Create the application.
 APP = flask.Flask(__name__)
@@ -13,7 +14,7 @@ def index():
 
 @APP.route('/generate')
 def generate():
-    return "generating"
+    return flask.send_file('static/CMBR.jpg', 'image/jpeg')
 
 
 if __name__ == '__main__':

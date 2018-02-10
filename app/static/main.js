@@ -9,5 +9,5 @@ function httpGetAsync(url, callback) {
 }
 
 function sendAlbumRequest() {
-    httpGetAsync("/generate", function (response){ console.log(response) });
+   document.getElementById('result-image').src = '/generate';
 }

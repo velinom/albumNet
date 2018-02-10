@@ -38,6 +38,21 @@ body {
     color: #2a3a44;
 }
 
+#genre-list {
+    width: max-content;
+    margin: auto;
+    position: relative;
+    top: 30px;
+    text-align: center;
+}
+
+#result-image {
+    width: 80%;
+    position: relative;
+    left: 10%;
+    top: 30px;
+}
+
 #generateButton {
     margin: auto;
     width: 150px;
