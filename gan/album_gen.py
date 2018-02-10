@@ -1,6 +1,6 @@
 import os
 
-from gan.utils import *
+from utils import *
 
 HEIGHT, WIDTH, CHANNEL = 256, 256, 3
 BATCH_SIZE = 64
