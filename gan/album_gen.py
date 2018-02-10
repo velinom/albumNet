@@ -1,8 +1,6 @@
 import tensorflow as tf
 import numpy as np
 import os
-import random
-import scipy.misc
 from utils import *
 
 HEIGHT, WIDTH, CHANNEL = 128, 128, 3
@@ -113,6 +111,7 @@ def generator(input, random_dim, is_train, reuse=False):
 
 
 def discriminator(input, is_train, reuse=False):
+    print(input.shape)
     c2, c4, c8, c16 = 128, 256, 512, 1024
     with tf.variable_scope('dis') as scope:
         if reuse:
@@ -152,6 +151,7 @@ def discriminator(input, is_train, reuse=False):
         # start from act4
         dim = int(np.prod(act4.get_shape()[1:]))
         fc1 = tf.reshape(act4, shape=[-1, dim], name='fc1')
+        print(dim)
 
         w2 = tf.get_variable('w2', shape=[dim, 1], dtype=tf.float32,
                              initializer=tf.truncated_normal_initializer(stddev=0.02))
@@ -176,6 +176,8 @@ def train():
 
     # wgan
     fake_image = generator(random_input, random_dim, is_train)
+
+    print("Real image shape: ", fake_image.shape)
 
     real_result = discriminator(real_image, is_train)
     fake_result = discriminator(fake_image, is_train, reuse=True)
