@@ -228,19 +228,21 @@ def train():
 
             train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
             for k in range(d_iters):
-                with tf.device('/gpu:0'):
-                    train_image = sess.run(image_batch)
-                    # wgan clip weights
-                    sess.run(d_clip)
-                    # Update the discriminator
-                    _, dLoss = sess.run([trainer_d, d_loss],
-                                        feed_dict={random_input: train_noise, real_image: train_image, is_train: True})
+                train_image = sess.run(image_batch)
+                # wgan clip weights
+                sess.run(d_clip)
+                # Update the discriminator
+                _, dLoss = sess.run([trainer_d, d_loss],
+                                    feed_dict={random_input: train_noise, real_image: train_image, is_train: True})
+                if k==0:
+                    print('D-Loss: %f' % dLoss)
             # Update the generator
             for k in range(g_iters):
-                with tf.device('/gpu:1'):
-                    # train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
-                    _, gLoss = sess.run([trainer_g, g_loss],
-                                        feed_dict={random_input: train_noise, is_train: True})
+                # train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
+                _, gLoss = sess.run([trainer_g, g_loss],
+                                    feed_dict={random_input: train_noise, is_train: True})
+                if k==0:
+                    print('G-Loss: %f' % gLoss)
 
         # save check point every 500 epoch
         if i % 500 == 0:
@@ -254,6 +256,7 @@ def train():
             sample_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
             imgtest = sess.run(fake_image, feed_dict={random_input: sample_noise, is_train: False})
             save_images(imgtest, [8, 8], new_covers_path + '/epoch' + str(i) + '.jpg')
+            print("Saving images")
 
             print('train:[%d],d_loss:%f,g_loss:%f' % (i, dLoss, gLoss))
     coord.request_stop()
