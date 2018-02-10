@@ -1,13 +1,10 @@
-import tensorflow as tf
-import numpy as np
 import os
-import random
-import scipy.misc
+
 from utils import *
 
-HEIGHT, WIDTH, CHANNEL = 128, 128, 3
+HEIGHT, WIDTH, CHANNEL = 256, 256, 3
 BATCH_SIZE = 64
-EPOCH = 5000
+EPOCH = 500
 
 version = 'newAlbums'
 new_covers_path = './' + version
@@ -20,7 +17,7 @@ def lrelu(x, n, leak=0.2):
 def process_data():
     current_dir = os.getcwd()
     # parent = os.path.dirname(current_dir)
-    albums_dir = os.path.join(current_dir, 'data')
+    albums_dir = os.path.join(current_dir, 'pop')
     images = []
     for each in os.listdir(albums_dir):
         images.append(os.path.join(albums_dir, each))
@@ -50,8 +47,8 @@ def process_data():
 
 
 def generator(input, random_dim, is_train, reuse=False):
-    c4, c8, c16, c32, c64 = 1024, 512, 256, 128, 64  # channel num
-    s4 = 4
+    c4, c8, c16, c32, c64 = 512, 256, 128, 64, 32  # channel num
+    s4 = 8
     output_dim = CHANNEL
     with tf.variable_scope('gen') as scope:
         if reuse:
@@ -124,7 +121,7 @@ def discriminator(input, is_train, reuse=False):
         bn1 = tf.contrib.layers.batch_norm(conv1, is_training=is_train, epsilon=1e-5, decay=0.9,
                                            updates_collections=None, scope='bn1')
         act1 = lrelu(bn1, n='act1')
-        drop1 = tf.nn.dropout(act1, keep_prob=.8)
+        drop1 = tf.nn.dropout(act1, keep_prob=.7)
 
         conv2 = tf.layers.conv2d(drop1, c4, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
@@ -132,7 +129,7 @@ def discriminator(input, is_train, reuse=False):
         bn2 = tf.contrib.layers.batch_norm(conv2, is_training=is_train, epsilon=1e-5, decay=0.9,
                                            updates_collections=None, scope='bn2')
         act2 = lrelu(bn2, n='act2')
-        drop2 = tf.nn.dropout(act2, keep_prob=.8)
+        drop2 = tf.nn.dropout(act2, keep_prob=.7)
 
         conv3 = tf.layers.conv2d(drop2, c8, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
@@ -140,7 +137,7 @@ def discriminator(input, is_train, reuse=False):
         bn3 = tf.contrib.layers.batch_norm(conv3, is_training=is_train, epsilon=1e-5, decay=0.9,
                                            updates_collections=None, scope='bn3')
         act3 = lrelu(bn3, n='act3')
-        drop3 = tf.nn.dropout(act3, keep_prob=.8)
+        drop3 = tf.nn.dropout(act3, keep_prob=.7)
 
         conv4 = tf.layers.conv2d(drop3, c16, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
@@ -210,52 +207,51 @@ def train():
     sess.run(tf.global_variables_initializer())
     sess.run(tf.local_variables_initializer())
     # continue training
-    save_path = saver.save(sess, "/tmp/model.ckpt")
+    save_path = saver.save(sess, "./tmp/model.ckpt")
     ckpt = tf.train.latest_checkpoint('./model/' + version)
     saver.restore(sess, save_path)
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    print('total training sample num:%d' % samples_num)
-    print('batch size: %d, batch num per epoch: %d, epoch num: %d' % (batch_size, batch_num, EPOCH))
-    print('start training...')
-    for i in range(EPOCH):
-        print('i: ',i)
-        for j in range(batch_num):
-            print('j: ',j)
-            d_iters = 5
-            g_iters = 1
+    with open('output.txt', 'w') as f:
+        for i in range(EPOCH):
+            f.write('i: '+str(i))
+            for j in range(batch_num):
+                f.write('j: '+str(j))
+                d_iters = 5
+                g_iters = 1
 
-            train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
-            for k in range(d_iters):
-                with tf.device('/gpu:0'):
+                train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
+                for k in range(d_iters):
                     train_image = sess.run(image_batch)
                     # wgan clip weights
                     sess.run(d_clip)
                     # Update the discriminator
                     _, dLoss = sess.run([trainer_d, d_loss],
                                         feed_dict={random_input: train_noise, real_image: train_image, is_train: True})
-            # Update the generator
-            for k in range(g_iters):
-                with tf.device('/gpu:1'):
+                # Update the generator
+                for k in range(g_iters):
                     # train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
                     _, gLoss = sess.run([trainer_g, g_loss],
                                         feed_dict={random_input: train_noise, is_train: True})
+                    if (k == 0):
+                        f.write("TIME: "+ str(dt.datetime.time()))
+                        f.write("G-LOSS: "+ str(gLoss))
 
-        # save check point every 500 epoch
-        if i % 500 == 0:
-            if not os.path.exists('./model/' + version):
-                os.makedirs('./model/' + version)
-            saver.save(sess, './model/' + version + '/' + str(i))
-        if i % 50 == 0:
-            # save images
-            if not os.path.exists(new_covers_path):
-                os.makedirs(new_covers_path)
-            sample_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
-            imgtest = sess.run(fake_image, feed_dict={random_input: sample_noise, is_train: False})
-            save_images(imgtest, [8, 8], new_covers_path + '/epoch' + str(i) + '.jpg')
+            # save check point every 500 epoch
+            if i % 500 == 0:
+                if not os.path.exists('./model/' + version):
+                    os.makedirs('./model/' + version)
+                saver.save(sess, './model/' + version + '/' + str(i))
+            if i % 5 == 0:
+                # save images
+                if not os.path.exists(new_covers_path):
+                    os.makedirs(new_covers_path)
+                sample_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
+                imgtest = sess.run(fake_image, feed_dict={random_input: sample_noise, is_train: False})
+                save_images(imgtest, [8, 8], new_covers_path + '/epoch' + str(i) + '.jpg')
 
-            print('train:[%d],d_loss:%f,g_loss:%f' % (i, dLoss, gLoss))
+                f.write('train:[%d],d_loss:%f,g_loss:%f' % (i, dLoss, gLoss))
     coord.request_stop()
     coord.join(threads)
 

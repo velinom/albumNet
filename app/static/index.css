@@ -5,6 +5,7 @@ body {
 
 #root {
     height: 100vh;
+    font-family: sans-serif;
 }
 
 .indexTitle {
@@ -12,11 +13,13 @@ body {
     font-size: 32px;
     text-align: center;
     padding: 20px 0px;
+    background-color: #007193;
+    color: #ebe8e2;
 }
 
 .index-content {
     width: 100%;
-    height: calc(100% - 57px);
+    height: calc(100% - 125px);
 }
 
 .content-column {
@@ -27,13 +30,60 @@ body {
 
 .column-title {
     position: relative;
-    left: 140px;
+    left: 132px;
+    top: 10px;
     width: max-content;
     font-size: 22px;
-    border-bottom: solid 1px black;
+    border-bottom: solid 1px #2a3a44;
+    color: #2a3a44;
+}
+
+#genre-list {
+    width: 173px;
+    margin: auto;
+    position: relative;
+    top: 30px;
+    text-align: center;
+}
+
+.genre-item {
+    font-size: 18px;
+    color: #2a3a44;
+    padding: 5px 0px;
+    cursor: pointer;
+    border-radius: 22px;
+}
+
+.genre-item.selected {
+    background-color: #6d98a2;
+    color: #ebe8e2;
+}
+
+.genre-item:hover {
+    background-color: #007193;
+    color: #ebe8e2;
+}
+
+#result-image {
+    width: 80%;
+    position: relative;
+    left: 10%;
+    top: 30px;
 }
 
 #generateButton {
-    position: relative;
-    top: 20px;
+    margin: auto;
+    width: 150px;
+    height: 30px;
+    background-color: #007193;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 22px;
+    color: #ebe8e2;
+    cursor: pointer;
+}
+
+#generateButton:hover {
+    background-color: #006173;
+    color: #ebe8e2;
 }

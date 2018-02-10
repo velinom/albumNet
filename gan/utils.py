@@ -9,6 +9,7 @@ import scipy.misc
 from PIL import Image
 import numpy as np
 from time import gmtime, strftime
+import datetime as dt
 from six.moves import xrange
 
 import tensorflow as tf
